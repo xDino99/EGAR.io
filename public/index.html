@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EGAR.io</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="toast-container"></div>
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="menu-overlay">
+
+        <div class="menu-box" id="main-menu">
+            <h1>EGAR.io</h1>
+
+            <div class="scrollable-menu">
+                <div class="section-title">PERFIL</div>
+                <div class="input-group">
+                    <label>Apodo (Dejar vacío para aleatorio):</label>
+                    <input type="text" id="nickname" placeholder="Nombre" maxlength="12">
+                </div>
+
+                <div class="color-picker-group">
+                    <label>Color Nombre:</label>
+                    <select id="nameColorType" onchange="toggleNameColors()">
+                        <option value="solid">Sólido</option>
+                        <option value="gradient">Degradado</option>
+                    </select>
+                    <div style="display:flex; gap:5px; margin-top:5px;">
+                        <input type="color" id="nameColor1" value="#ffffff">
+                        <input type="color" id="nameColor2" value="#ffff00" style="display:none;">
+                    </div>
+                </div>
+
+                <div class="section-title">NAVE</div>
+                <div class="input-group">
+                    <label>Estilo Skin:</label>
+                    <select id="skinType" onchange="toggleSkinColors()">
+                        <option value="solid">Liso</option>
+                        <option value="gradient">Degradado</option>
+                    </select>
+                </div>
+
+                <div class="color-picker-group">
+                    <div style="display:flex; gap:5px;">
+                        <input type="color" id="color1" value="#ff0000">
+                        <input type="color" id="color2" value="#0000ff" style="display:none;">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Efecto:</label>
+                    <select id="effect">
+                        <option value="none">Ninguno</option>
+                        <option value="star">Estrella</option>
+                        <option value="glow">Neón</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="stats-box">
+                <div class="tab-header">
+                    <button class="active" onclick="switchTab('ranking')">Top 5</button>
+                    <button onclick="switchTab('players')">Jugadores</button>
+                </div>
+                <div id="ranking-tab" class="tab-content active">
+                    <ul id="menu-leaderboard">
+                        <li>Cargando...</li>
+                    </ul>
+                </div>
+                <div id="players-tab" class="tab-content">
+                    <ul id="menu-playerlist">
+                        <li>Nadie conectado</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-play" onclick="joinGame()">JUGAR</button>
+                <button class="btn-settings" onclick="toggleSettings(true)">⚙️</button>
+            </div>
+        </div>
+
+        <div class="menu-box" id="settings-menu" style="display: none;">
+            <h1>AJUSTES</h1>
+
+            <div class="section-title">COMIDA</div>
+            <div class="input-group">
+                <label>Tipo de Color:</label>
+                <select id="foodColorType" onchange="toggleFoodColors()">
+                    <option value="random">Aleatorio (Rainbow)</option>
+                    <option value="solid">Único Color</option>
+                </select>
+            </div>
+            <div class="input-group" id="foodColorContainer" style="display:none;">
+                <label>Elegir Color:</label>
+                <input type="color" id="foodColorSolid" value="#00ff00" onchange="applySettings()">
+            </div>
+
+            <div class="section-title">VISUALES</div>
+
+            <div class="input-group">
+                <label>Color de Fondo (HTML):</label>
+                <input type="color" id="bgColorPicker" value="#111111" onchange="applySettings()">
+            </div>
+
+            <div class="input-group">
+                <label>Imagen Fondo (URL):</label>
+                <input type="text" id="bgImageInput" placeholder="https://..." onchange="applySettings()">
+            </div>
+
+            <div class="section-title">VISIBILIDAD</div>
+
+            <div class="input-group">
+                <label>Oscuridad Fuera del Mapa:</label>
+                <input type="range" id="voidAlpha" min="0" max="1" step="0.1" value="0.8" onchange="applySettings()">
+            </div>
+
+            <div class="input-group">
+                <label>Oscuridad Dentro del Mapa:</label>
+                <input type="range" id="mapAlpha" min="0" max="1" step="0.1" value="0.2" onchange="applySettings()">
+            </div>
+
+            <div class="input-group">
+                <label>Opacidad Grilla:</label>
+                <input type="range" id="gridAlpha" min="0" max="1" step="0.1" value="0.3" onchange="applySettings()">
+            </div>
+
+            <button class="btn-exit" onclick="toggleSettings(false)">Volver</button>
+        </div>
+
+    </div>
+
+    <div id="game-ui">
+        <div id="live-leaderboard">
+            <h3>TOP SERVER</h3>
+            <ul id="lb-list"></ul>
+        </div>
+
+        <div id="score-container">
+            <span class="label">MASA</span>
+            <span id="score">0</span>
+        </div>
+
+        <button id="ingame-exit" onclick="exitGame()">SALIR</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
